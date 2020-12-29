@@ -387,6 +387,8 @@
        attribute anchor { xsd:ID }?,
        attribute pn { xsd:ID }?,
        attribute hangText { text }?,
+       [ a:defaultValue = "0" ]
+       attribute indent { text }?,
        [ a:defaultValue = "false" ]
        attribute keepWithNext { "true" | "false" }?,
        [ a:defaultValue = "false" ]
@@ -417,7 +419,17 @@
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
        attribute pn { xsd:ID }?,
-       (artset | artwork | dl | figure | iref | ol | t | table | ul)*
+       (artset
+        | artwork
+        | blockquote
+        | dl
+        | figure
+        | iref
+        | ol
+        | t
+        | table
+        | ul)*
+
      }
 
    blockquote =
@@ -466,7 +478,8 @@
        attribute group { text }?,
        [ a:defaultValue = "normal" ]
        attribute spacing { "normal" | "compact" }?,
-       attribute indent { text }?,
+       [ a:defaultValue = "adaptive" ]
+       attribute indent { text | "adaptive" }?,
        attribute pn { xsd:ID }?,
        li+
      }
@@ -482,6 +495,7 @@
         attribute empty { "true" | "false" },
         [ a:defaultValue = "false" ]
         attribute bare { "true" | "false" }?)?,
+       [ a:defaultValue = "3" ]
         attribute indent { text }?,
         attribute pn { xsd:ID }?,
        li+
@@ -529,6 +543,7 @@
        attribute spacing { "normal" | "compact" }?,
        [ a:defaultValue = "false" ]
        attribute newline { "true" | "false" }?,
+       [ a:defaultValue = "3" ]
        attribute indent { text }?,
        attribute pn { xsd:ID }?,
        (dt, dd)+
@@ -563,6 +578,7 @@
        attribute pn { xsd:ID }?,
        (( artset
           | artwork
+          | aside
           | dl
           | figure
           | ol
@@ -726,6 +742,8 @@
         | iref
         | relref
         | strong
+        | sub
+        | sup
         | tt
         | xref)*
      }
@@ -742,6 +760,8 @@
         | iref
         | relref
         | strong
+        | sub
+        | sup
         | tt
         | xref)*
      }
