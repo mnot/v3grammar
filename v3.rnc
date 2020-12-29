@@ -61,7 +61,8 @@
        keyword*,
        abstract?,
        note*,
-       boilerplate?
+       boilerplate?,
+       toc?
      }
 
    title =
@@ -116,17 +117,8 @@
      element postal {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
-       ((city | code | country | region | street)* 
-        | postalLine+
-        | (city? 
-           & cityarea? 
-           & code? 
-           & country 
-           & extaddr*
-           & pobox?
-           & region?
-           & sortingcode? 
-           & street*))
+       ((city | cityarea | code | country | extaddr | pobox | region | sortingcode | street)* 
+        | postalLine+)
      }
 
    extaddr =
@@ -292,6 +284,13 @@
 
    boilerplate =
      element boilerplate {
+       attribute xml:base { text }?,
+       attribute xml:lang { text }?,
+       section+
+     }
+
+   toc =
+     element toc {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        section+
@@ -573,6 +572,8 @@
      element eref {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
+       [ a:defaultValue = "none" ]
+       attribute brackets { "none" | "angle" }?,
        attribute target { text },
        text
      }
