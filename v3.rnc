@@ -1,15 +1,15 @@
-    namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+   namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
 
-    # xml2rfc Version 3 grammar
+   # xml2rfc Version 3 grammar
 
-    rfc =
+   rfc =
      element rfc {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute number { text }?,
        [ a:defaultValue = "" ] attribute obsoletes { text }?,
        [ a:defaultValue = "" ] attribute updates { text }?,
-       attribute category { text }?,
+       attribute category { "std" | "bcp" | "exp" | "info" | "historic" }?,
        attribute mode { text }?,
        [ a:defaultValue = "false" ]
        attribute consensus { "no" | "yes" | "false" | "true" }?,
@@ -40,7 +40,7 @@
        back?
      }
 
-    link =
+   link =
      element link {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -48,7 +48,7 @@
        attribute rel { text }?
      }
 
-    front =
+   front =
      element front {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -64,7 +64,7 @@
        boilerplate?
      }
 
-    title =
+   title =
      element title {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -73,10 +73,11 @@
        text
      }
 
-    author =
+   author =
      element author {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
+       attribute anchor { xsd:ID }?,
        attribute initials { text }?,
        attribute asciiInitials { text }?,
        attribute surname { text }?,
@@ -88,16 +89,19 @@
        address?
      }
 
-    organization =
+   organization =
      element organization {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute abbrev { text }?,
        attribute ascii { text }?,
+       attribute asciiAbbrev { text }?,
+       [ a:defaultValue = "true" ]
+       attribute showOnFrontPage { "true" | "false" }?,
        text
      }
 
-    address =
+   address =
      element address {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -108,14 +112,40 @@
        uri?
      }
 
-    postal =
+   postal =
      element postal {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
-       ((city | code | country | region | street)* | postalLine+)
+       ((city | code | country | region | street)* 
+        | postalLine+
+        | (city? 
+           & cityarea? 
+           & code? 
+           & country 
+           & extaddr*
+           & pobox?
+           & region?
+           & sortingcode? 
+           & street*))
      }
 
-    street =
+   extaddr =
+     element extaddr {
+       attribute xml:base { text }?,
+       attribute xml:lang { text }?,
+       attribute ascii { text }?,
+       text
+     }
+
+   pobox =
+     element pobox {
+       attribute xml:base { text }?,
+       attribute xml:lang { text }?,
+       attribute ascii { text }?,
+       text
+     }
+
+   street =
      element street {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -123,7 +153,15 @@
        text
      }
 
-    city =
+   cityarea =
+     element cityarea {
+       attribute xml:base { text }?,
+       attribute xml:lang { text }?,
+       attribute ascii { text }?,
+       text
+     }
+
+   city =
      element city {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -131,7 +169,7 @@
        text
      }
 
-    region =
+   region =
      element region {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -139,7 +177,7 @@
        text
      }
 
-    code =
+   code =
      element code {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -147,7 +185,15 @@
        text
      }
 
-    country =
+   sortingcode =
+     element sortingcode {
+       attribute xml:base { text }?,
+       attribute xml:lang { text }?,
+       attribute ascii { text }?,
+       text
+     }
+
+   country =
      element country {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -155,7 +201,7 @@
        text
      }
 
-    postalLine =
+   postalLine =
      element postalLine {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -163,21 +209,21 @@
        text
      }
 
-    phone =
+   phone =
      element phone {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        text
      }
 
-    facsimile =
+   facsimile =
      element facsimile {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        text
      }
 
-    email =
+   email =
      element email {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -185,85 +231,85 @@
        text
      }
 
-    uri =
+   uri =
      element uri {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        text
      }
 
-    date =
+   date =
      element date {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute day { text }?,
        attribute month { text }?,
        attribute year { text }?,
-       empty
+       text
      }
 
-    area =
+   area =
      element area {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        text
      }
 
-    workgroup =
+   workgroup =
      element workgroup {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        text
      }
 
-    keyword =
+   keyword =
      element keyword {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        text
      }
 
-    abstract =
+   abstract =
      element abstract {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        (dl | ol | t | ul)+
      }
 
-    note =
+   note =
      element note {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute title { text }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        [ a:defaultValue = "false" ]
        attribute removeInRFC { "true" | "false" }?,
        name?,
        (dl | ol | t | ul)+
      }
 
-    boilerplate =
+   boilerplate =
      element boilerplate {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        section+
      }
 
-    middle =
+   middle =
      element middle {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        section+
      }
 
-    section =
+   section =
      element section {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        attribute title { text }?,
        [ a:defaultValue = "true" ]
        attribute numbered { "true" | "false" }?,
@@ -272,8 +318,10 @@
        [ a:defaultValue = "false" ]
        attribute removeInRFC { "true" | "false" }?,
        name?,
-       (artwork
+       (artset
+        | artwork
         | aside
+	| author
         | blockquote
         | dl
         | figure
@@ -287,20 +335,31 @@
        section*
      }
 
-    name =
+   name =
      element name {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
-       attribute slugifiedName { text }?,
-       (text | cref | eref | relref | tt | xref)*
+       attribute slugifiedName { xsd:ID }?,
+       (text
+        | bcp14
+        | cref
+        | em
+        | eref
+        | iref
+        | relref
+        | strong
+        | sub
+        | sup
+        | tt
+        | xref)*
      }
 
-    t =
+   t =
      element t {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        attribute hangText { text }?,
        [ a:defaultValue = "false" ]
        attribute keepWithNext { "false" | "true" }?,
@@ -319,28 +378,29 @@
         | sub
         | sup
         | tt
+        | u
         | vspace
         | xref)*
      }
 
-    aside =
+   aside =
      element aside {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
-       (artwork | dl | figure | iref | \list | ol | t | table | ul)*
+       attribute pn { xsd:ID }?,
+       (artset | artwork | dl | figure | iref | ol | t | table | ul)*
      }
 
-    blockquote =
+   blockquote =
      element blockquote {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        attribute cite { text }?,
        attribute quotedFrom { text }?,
-       ((artwork | dl | figure | ol | sourcecode | t | ul)+
+       ((artset | artwork | dl | figure | ol | sourcecode | t | ul)+
         | (text
            | bcp14
            | cref
@@ -352,21 +412,22 @@
            | sub
            | sup
            | tt
+           | u
            | xref)+)
      }
 
-    \list =
+   \list =
      element list {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        [ a:defaultValue = "empty" ] attribute style { text }?,
        attribute hangIndent { text }?,
        attribute counter { text }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        t+
      }
 
-    ol =
+   ol =
      element ol {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -376,11 +437,12 @@
        attribute group { text }?,
        [ a:defaultValue = "normal" ]
        attribute spacing { "normal" | "compact" }?,
-       attribute pn { text }?,
+       attribute indent { text }?,
+       attribute pn { xsd:ID }?,
        li+
      }
 
-    ul =
+   ul =
      element ul {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -388,18 +450,22 @@
        [ a:defaultValue = "normal" ]
        attribute spacing { "normal" | "compact" }?,
        ([ a:defaultValue = "false" ]
-        attribute empty { "false" | "true" },
-        attribute pn { text }?)?,
+        attribute empty { "false" | "true"},
+	[ a:defaultValue = "false" ]
+        attribute bare { "false" | "true"}?,
+        attribute indent { text }?,
+        attribute pn { xsd:ID }?)?,
        li+
      }
 
-    li =
+   li =
      element li {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
-       ((artwork | dl | figure | ol | sourcecode | t | ul)+
+       attribute derivedCounter { text }?,
+       attribute pn { xsd:ID }?,
+       ((artset | artwork | blockquote | dl | figure | ol | sourcecode | t | ul)+
         | (text
            | bcp14
            | cref
@@ -411,28 +477,30 @@
            | sub
            | sup
            | tt
+           | u
            | xref)+)
      }
 
-    dl =
+   dl =
      element dl {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
        [ a:defaultValue = "normal" ]
        attribute spacing { "normal" | "compact" }?,
-       [ a:defaultValue = "true" ]
-       attribute hanging { "false" | "true" }?,
-       attribute pn { text }?,
+       [ a:defaultValue = "false" ]
+       attribute newline { "false" | "true" }?,
+       attribute indent { text }?,
+       attribute pn { xsd:ID }?,
        (dt, dd)+
      }
 
-    dt =
+   dt =
      element dt {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        (text
         | bcp14
         | cref
@@ -447,13 +515,13 @@
         | xref)*
      }
 
-    dd =
+   dd =
      element dd {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
-       ((artwork | dl | figure | ol | sourcecode | t | ul)+
+       attribute pn { xsd:ID }?,
+       ((artset | artwork | dl | figure | ol | sourcecode | t | ul)+
         | (text
            | bcp14
            | cref
@@ -465,10 +533,11 @@
            | sub
            | sup
            | tt
+           | u
            | xref)+)
      }
 
-    xref =
+   xref =
      element xref {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -478,23 +547,29 @@
        [ a:defaultValue = "default" ]
        attribute format { "default" | "title" | "counter" | "none" }?,
        attribute derivedContent { text }?,
+       [ a:defaultValue = "of" ]
+       attribute sectionFormat { "of" | "comma" | "parens" | "bare" }?,
+       attribute section { text }?,
+       attribute relative { text }?,
+       attribute derivedLink { text }?,
        text
      }
 
-    relref =
+   relref =
      element relref {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute target { xsd:IDREF },
        [ a:defaultValue = "of" ]
        attribute displayFormat { "of" | "comma" | "parens" | "bare" }?,
+       attribute derivedContent { text }?,
        attribute section { text },
        attribute relative { text }?,
        attribute derivedLink { text }?,
        text
      }
 
-    eref =
+   eref =
      element eref {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -502,7 +577,7 @@
        text
      }
 
-    iref =
+   iref =
      element iref {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -510,11 +585,11 @@
        [ a:defaultValue = "" ] attribute subitem { text }?,
        [ a:defaultValue = "false" ]
        attribute primary { "true" | "false" }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        empty
      }
 
-    cref =
+   cref =
      element cref {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -525,7 +600,7 @@
        (text | em | eref | relref | strong | sub | sup | tt | xref)*
      }
 
-    tt =
+   tt =
      element tt {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -542,7 +617,7 @@
         | xref)*
      }
 
-    strong =
+   strong =
      element strong {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -559,7 +634,7 @@
         | xref)*
      }
 
-    em =
+   em =
      element em {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -576,7 +651,7 @@
         | xref)*
      }
 
-    sub =
+   sub =
      element sub {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -592,7 +667,7 @@
         | xref)*
      }
 
-    sup =
+   sup =
      element sup {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -608,7 +683,7 @@
         | xref)*
      }
 
-    spanx =
+   spanx =
      element spanx {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -618,7 +693,7 @@
        text
      }
 
-    vspace =
+   vspace =
      element vspace {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -626,12 +701,12 @@
        empty
      }
 
-    figure =
+   figure =
      element figure {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        [ a:defaultValue = "" ] attribute title { text }?,
        [ a:defaultValue = "false" ]
        attribute suppress-title { "true" | "false" }?,
@@ -645,16 +720,18 @@
        name?,
        iref*,
        preamble?,
-       (artwork | sourcecode)+,
+       (artset | artwork | sourcecode)+,
        postamble?
      }
 
-    table =
+   table =
      element table {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
+       [ a:defaultValue = "center" ]
+       attribute align { "left" | "center" | "right" }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        name?,
        iref*,
        thead?,
@@ -662,7 +739,7 @@
        tfoot?
      }
 
-    preamble =
+   preamble =
      element preamble {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -678,15 +755,26 @@
         | sub
         | sup
         | tt
+        | u
         | xref)*
      }
 
-    artwork =
+   artset =
+     element artset {
+       attribute xml:base { text }?,
+       attribute xml:lang { text }?,
+       attribute anchor { xsd:ID }?,
+       attribute pn { xsd:ID }?,
+       artwork+
+     }
+
+
+   artwork =
      element artwork {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        attribute xml:space { text }?,
        [ a:defaultValue = "" ] attribute name { text }?,
        [ a:defaultValue = "" ] attribute type { text }?,
@@ -697,24 +785,26 @@
        [ a:defaultValue = "" ] attribute width { text }?,
        [ a:defaultValue = "" ] attribute height { text }?,
        attribute originalSrc { text }?,
-       (text* | external "SVG-1.2-RFC.rnc")
+       (text* | svg)
      }
-    # https://www.rfc-editor.org/materials/format/SVG-1.2-RFC.rnc
+   include "SVG-1.2-RFC.rnc"
 
-    sourcecode =
+   sourcecode =
      element sourcecode {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        [ a:defaultValue = "" ] attribute name { text }?,
        [ a:defaultValue = "" ] attribute type { text }?,
+       [ a:defaultValue = "false" ] 
+       attribute markers { "true" | "false" }?,
        attribute src { text }?,
        attribute originalSrc { text }?,
        text
      }
 
-    thead =
+   thead =
      element thead {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -722,7 +812,7 @@
        tr+
      }
 
-    tbody =
+   tbody =
      element tbody {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -730,7 +820,7 @@
        tr+
      }
 
-    tfoot =
+   tfoot =
      element tfoot {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -738,7 +828,7 @@
        tr+
      }
 
-    tr =
+   tr =
      element tr {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -746,19 +836,18 @@
        (td | th)+
      }
 
-    td =
+   td =
      element td {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       [ a:defaultValue = "0" ] attribute colspan { text }?,
-       [ a:defaultValue = "0" ] attribute rowspan { text }?,
+       [ a:defaultValue = "1" ] attribute colspan { text }?,
+       [ a:defaultValue = "1" ] attribute rowspan { text }?,
        [ a:defaultValue = "left" ]
        attribute align { "left" | "center" | "right" }?,
-       ((artwork | dl | figure | ol | sourcecode | t | ul)+
+       ((artset | artwork | dl | figure | ol | sourcecode | t | ul)+
         | (text
            | bcp14
-           | br
            | cref
            | em
            | eref
@@ -768,22 +857,22 @@
            | sub
            | sup
            | tt
+           | u
            | xref)*)
      }
 
-    th =
+   th =
      element th {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID }?,
-       [ a:defaultValue = "0" ] attribute colspan { text }?,
-       [ a:defaultValue = "0" ] attribute rowspan { text }?,
+       [ a:defaultValue = "1" ] attribute colspan { text }?,
+       [ a:defaultValue = "1" ] attribute rowspan { text }?,
        [ a:defaultValue = "left" ]
        attribute align { "left" | "center" | "right" }?,
-       ((artwork | dl | figure | ol | sourcecode | t | ul)+
+       ((artset | artwork | dl | figure | ol | sourcecode | t | ul)+
         | (text
            | bcp14
-           | br
            | cref
            | em
            | eref
@@ -793,17 +882,18 @@
            | sub
            | sup
            | tt
+           | u
            | xref)*)
      }
 
-    postamble =
+   postamble =
      element postamble {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        (text | cref | eref | iref | spanx | xref)*
      }
 
-    texttable =
+   texttable =
      element texttable {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -822,7 +912,7 @@
        postamble?
      }
 
-    ttcol =
+   ttcol =
      element ttcol {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -832,28 +922,21 @@
        (cref | eref | iref | xref | text)*
      }
 
-    c =
+   c =
      element c {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        (text | cref | eref | iref | spanx | xref)*
      }
 
-    bcp14 =
+   bcp14 =
      element bcp14 {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        text
      }
 
-    br =
-     element br {
-       attribute xml:base { text }?,
-       attribute xml:lang { text }?,
-       empty
-     }
-
-    back =
+   back =
      element back {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -862,7 +945,7 @@
        section*
      }
 
-    displayreference =
+   displayreference =
      element displayreference {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -870,38 +953,48 @@
        attribute to { text }
      }
 
-    references =
+   references =
      element references {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
-       attribute pn { text }?,
+       attribute pn { xsd:ID }?,
        attribute anchor { xsd:ID }?,
        attribute title { text }?,
        name?,
-       (reference | referencegroup)*
+       (references+ | (reference | referencegroup)*)
      }
 
-    reference =
+   reference =
      element reference {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID },
+       attribute derivedAnchor { text }?,
        attribute target { text }?,
        [ a:defaultValue = "true" ]
        attribute quoteTitle { "true" | "false" }?,
+       attribute quote-title { "true" | "false" }?,
+       stream?,
        front,
        (annotation | format | refcontent | seriesInfo)*
      }
 
-    referencegroup =
+   stream = 
+     element stream {
+       ( "IETF" | "IAB" | "IRTF" | "independent" )?       
+   }
+
+   referencegroup =
      element referencegroup {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        attribute anchor { xsd:ID },
+       attribute derivedAnchor { text }?,
+       attribute target { text }?,
        reference+
      }
 
-    seriesInfo =
+   seriesInfo =
      element seriesInfo {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -910,12 +1003,11 @@
        attribute asciiName { text }?,
        attribute asciiValue { text }?,
        attribute status { text }?,
-       [ a:defaultValue = "IETF" ]
        attribute stream { "IETF" | "IAB" | "IRTF" | "independent" }?,
        empty
      }
 
-    format =
+   format =
      element format {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -925,7 +1017,7 @@
        empty
      }
 
-    annotation =
+   annotation =
      element annotation {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
@@ -941,14 +1033,24 @@
         | sub
         | sup
         | tt
+        | u
         | xref)*
      }
 
-    refcontent =
+   refcontent =
      element refcontent {
        attribute xml:base { text }?,
        attribute xml:lang { text }?,
        (text | bcp14 | em | strong | sub | sup | tt)*
      }
-    start |= rfc
+   start |= rfc
 
+   u = 
+     element u {
+       attribute anchor { xsd:ID }?,
+       attribute ascii { text }?,
+       [ a:defaultValue = "lit-name-num" ]
+       attribute format { text }?,
+       attribute pn { xsd:ID }?,
+       text
+     }
